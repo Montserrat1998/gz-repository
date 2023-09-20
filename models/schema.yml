@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: sales
+    description: >
+      This model represents sales data, including information about orders and products.
+    tests:
+      - unique:
+          column_name: "(orders_id || '-' || products_id)"
+    columns:
+      - name: orders_id
+        description: >
+          PK unique identifier for each order.
+        tests:
+          - not_null
+      - name: products_id
+        description: >
+          PK unique identifier for each product.
+        tests:
+          - not_null
+      - name: qty
+      - name: turnover
+        description: >
+          The total revenue generated from each sale.
+        tests:
+          - not_null
+      - name: purchase_cost
+        description: >
+          The cost of purchasing the product.
+        tests:
+          - not_null
