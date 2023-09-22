@@ -2,3 +2,6 @@
    ROUND( SAFE_DIVIDE( ({{ turnover }} - {{ purchase_cost }}) , {{ turnover }} ) , {{ precision }})
 {% endmacro %}
 
+{% macro margin(turnover, purchase_cost) %}
+   ({{ turnover }} - {{ purchase_cost }})
+{% endmacro %}
