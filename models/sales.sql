@@ -1,27 +1,38 @@
-{{ config(schema='transaction') }}
-
 WITH 
 
-  sales AS (SELECT * FROM `gz_raw_data.raw_gz_sales`)
+  sales AS (
+    SELECT
+      date_date
+      ,orders_id
+      ,pdt_id AS products_id
+      ,revenue AS turnover
+      ,quantity AS qty
+    FROM `gz_raw_data.raw_gz_sales`
+    WHERE revenue > 0
+    )
 
-  ,product AS (SELECT * FROM `gz_raw_data.raw_gz_product`)
+  ,product AS (
+    SELECT
+      products_id
+      ,CAST(purchSE_PRICE AS FLOAT64) AS purchase_price
+    FROM `gz_raw_data.raw_gz_product`
+  )
 
 SELECT
   s.date_date
   ### Key ###
   ,s.orders_id
-  ,s.pdt_id AS products_id
+  ,s.products_id
   ###########
 	-- qty --
-	,s.quantity AS qty
+	,s.qty
   -- revenue --
-  ,s.revenue AS turnover
+  ,s.turnover
   -- cost --
-  ,CAST(p.purchSE_PRICE AS FLOAT64) AS purchase_price
-	,ROUND(s.quantity*CAST(p.purchSE_PRICE AS FLOAT64),2) AS purchase_cost
+  ,purchase_price AS purchase_price
+	,ROUND(s.qty*purchase_price,2) AS purchase_cost
 	-- margin --
-	,ROUND(s.revenue-s.quantity*CAST(p.purchSE_PRICE AS FLOAT64),2) AS margin
-    ,{{ margin_percent('s.revenue', 's.quantity*CAST(p.purchSE_PRICE AS FLOAT64)') }} as product_margin_percent
-    ,{{ margin('s.revenue', 's.quantity*CAST(p.purchSE_PRICE AS FLOAT64)') }} as product_margin
+	,ROUND(s.turnover-s.qty*purchase_price,2) AS product_margin
+  ,ROUND(SAFE_DIVIDE((s.turnover-s.qty*purchase_price), s.turnover), 2) AS product_margin_percent
 FROM sales s
-INNER JOIN product p ON s.pdt_id = p.products_id
+INNER JOIN product p ON s.products_id = p.products_id
