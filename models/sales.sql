@@ -23,7 +23,7 @@ SELECT
 	-- product_margin --
 	,s.revenue - s.quantity*CAST(p.purchSE_PRICE AS FLOAT64) AS margin
 =======
-	-- margin --
+	-- product_margin --
 	,ROUND(s.revenue-s.quantity*CAST(p.purchSE_PRICE AS FLOAT64),2) AS margin
 >>>>>>> 533a91cd8cc9b1b4a00a2b5ec65b67b07fcb9822
 FROM sales s
