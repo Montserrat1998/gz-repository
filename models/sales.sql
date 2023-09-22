@@ -21,5 +21,6 @@ SELECT
 	,ROUND(s.quantity*CAST(p.purchSE_PRICE AS FLOAT64),2) AS purchase_cost
 	-- margin --
 	,ROUND(s.revenue-s.quantity*CAST(p.purchSE_PRICE AS FLOAT64),2) AS margin
+    , {{ margin_percent('sales_data.turnover', 'sales_data.purchase_cost') }} as product_margin_percent
 FROM sales s
 INNER JOIN product p ON s.pdt_id = p.products_id
